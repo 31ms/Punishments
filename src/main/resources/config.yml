@@ -1,0 +1,6 @@
+database:
+  provider: "h2"
+  host: "" # leave blank for h2.
+  username: "" # leave blank for h2.
+  password: "" # leave blank for h2.
+  name: "database"

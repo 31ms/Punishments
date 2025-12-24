@@ -1,0 +1,9 @@
+name: Punishments
+version: '1.0'
+main: xyz.propsik.punishments.Punishments
+api-version: '1.21'
+commands:
+  addtestrecord:
+    description: idk
+  gettestrecord:
+    description: idk
