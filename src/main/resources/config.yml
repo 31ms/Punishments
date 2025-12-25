@@ -1,6 +1,14 @@
 database:
-  provider: "h2"
+  provider: "h2" # available options: h2, mysql
   host: "" # leave blank for h2.
   username: "" # leave blank for h2.
   password: "" # leave blank for h2.
   name: "database"
+duration-format:
+  years: "years"
+  months: "months"
+  weeks: "weeks"
+  days: "days"
+  hours: "hours"
+  minutes: "minutes"
+  seconds: "seconds"

@@ -2,9 +2,12 @@ package xyz.propsik.punishments;
 
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
-import xyz.propsik.punishments.Commands.AddTestRecordCommand;
+import xyz.propsik.punishments.Commands.BanCommand;
 import xyz.propsik.punishments.Commands.GetTestRecordCommand;
-import xyz.propsik.punishments.Storage.h2DbManager;
+import xyz.propsik.punishments.Commands.RevokeTestRecordCommand;
+import xyz.propsik.punishments.Storage.H2DbManager;
+import xyz.propsik.punishments.Storage.MySQLDbManager;
+import xyz.propsik.punishments.Util.Messages;
 import xyz.propsik.punishments.Util.Utils;
 
 import java.util.Objects;
@@ -15,17 +18,21 @@ public final class Punishments extends JavaPlugin {
     public void onEnable() {
 
         Utils.init(this);
+
         makeConfig();
         prepareDatabase();
         connectToDatabase();
+
+        Messages.init();
 
         registerCommands();
 
     }
     private void registerCommands()
     {
-        registerCommand("addtestrecord", new AddTestRecordCommand());
+        registerCommand("ban", new BanCommand());
         registerCommand("gettestrecord", new GetTestRecordCommand());
+        registerCommand("revoketestrecord", new RevokeTestRecordCommand());
     }
     private void registerCommand(String command, CommandExecutor executor)
     {
@@ -46,10 +53,14 @@ public final class Punishments extends JavaPlugin {
     private void prepareDatabase()
     {
         String database = getConfig().getString("database.provider");
+        if(database != null) database = database.toLowerCase();
         switch(database)
         {
             case "h2":
-                Utils.setDatabaseManager(new h2DbManager());
+                Utils.setDatabaseManager(new H2DbManager());
+                break;
+            case "mysql":
+                Utils.setDatabaseManager(new MySQLDbManager());
                 break;
             case null:
                 getLogger().severe("No database type specified in config.yml!");
