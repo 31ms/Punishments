@@ -247,27 +247,23 @@ public abstract class Utils {
         }
     }
     public static String formatDurationtoString(long duration) {
-        long seconds = duration / 1000 % 60;
         long minutes = duration / (1000 * 60) % 60;
         long hours = duration / (1000 * 60 * 60) % 24;
         long days = duration / (1000 * 60 * 60 * 24);
-        long weeks = days / 7;
-        days = days % 7;
-        long months = weeks / 4;
-        weeks = weeks % 4;
+        long months = days / 28;
+        days = days % 28;
         long years = months / 12;
         months = months % 12;
 
         StringBuilder sb = new StringBuilder();
-        if (years > 0) sb.append(years).append(getConfig().getString("duration-format.years"));
-        if (months > 0) sb.append(months).append(getConfig().getString("duration-format.months"));
-        if (weeks > 0) sb.append(weeks).append(getConfig().getString("duration-format.weeks"));
-        if (days > 0) sb.append(days).append(getConfig().getString("duration-format.days"));
-        if (hours > 0) sb.append(hours).append(getConfig().getString("duration-format.hours"));
-        if (minutes > 0) sb.append(minutes).append(getConfig().getString("duration-format.minutes"));
-        if (seconds > 0 || sb.isEmpty()) sb.append(seconds).append(getConfig().getString("duration-format.seconds"));
+        if (years > 0) sb.append(years).append(" ").append(getConfig().getString("duration-format.years")).append(" ");
+        if (months > 0) sb.append(months).append(" ").append(getConfig().getString("duration-format.months")).append(" ");
+        if (days > 0) sb.append(days).append(" ").append(getConfig().getString("duration-format.days")).append(" ");
+        if (hours > 0) sb.append(hours).append(" ").append(getConfig().getString("duration-format.hours")).append(" ");
+        if (minutes > 0 || sb.isEmpty()) sb.append(minutes).append(" ").append(getConfig().getString("duration-format.minutes"));
 
         return sb.toString().trim();
     }
+
 
 }

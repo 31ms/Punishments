@@ -26,10 +26,6 @@ public abstract class AbstractDatabaseManager implements DatabaseManager {
         }
     }
 
-    @Override
-    public Connection getConnection() {
-        return connection;
-    }
 
 
     @Override

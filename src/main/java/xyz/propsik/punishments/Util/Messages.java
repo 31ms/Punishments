@@ -4,6 +4,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.List;
 
 public abstract class Messages {
     private static FileConfiguration config;
@@ -22,6 +23,10 @@ public abstract class Messages {
     public static String get(String path)
     {
         return config.getString(path);
+    }
+    public static List<String> getList(String path)
+    {
+        return config.getStringList(path);
     }
     public static void reload()
     {

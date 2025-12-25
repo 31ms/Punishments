@@ -1,10 +1,12 @@
 package xyz.propsik.punishments;
 
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.propsik.punishments.Commands.BanCommand;
 import xyz.propsik.punishments.Commands.GetTestRecordCommand;
 import xyz.propsik.punishments.Commands.RevokeTestRecordCommand;
+import xyz.propsik.punishments.Listeners.AsyncPlayerPreLoginListener;
 import xyz.propsik.punishments.Storage.H2DbManager;
 import xyz.propsik.punishments.Storage.MySQLDbManager;
 import xyz.propsik.punishments.Util.Messages;
@@ -26,6 +28,7 @@ public final class Punishments extends JavaPlugin {
         Messages.init();
 
         registerCommands();
+        registerListeners();
 
     }
     private void registerCommands()
@@ -50,6 +53,16 @@ public final class Punishments extends JavaPlugin {
         }
         saveDefaultConfig();
     }
+    private void registerListener(Listener listener)
+    {
+        getServer().getPluginManager().registerEvents(listener, this);
+    }
+    private void registerListeners()
+    {
+        registerListener(new AsyncPlayerPreLoginListener());
+    }
+
+
     private void prepareDatabase()
     {
         String database = getConfig().getString("database.provider");

@@ -25,29 +25,33 @@ public class BanCommand implements CommandExecutor {
                 Utils.sendMessage(commandSender, Messages.get("ban.player-not-found").replace("%player%", strings[0]));
             }
             else {
-                Player player = Bukkit.getPlayer(uuid);
-                UUID issuerId;
-                String issuerName;
-                if(commandSender instanceof Player issuer) {
-                    if(issuer.getUniqueId().equals(uuid)) {
-                        Utils.sendMessage(issuer, Messages.get("ban.cant-ban-self"));
-                        return;
-                    }
-                    issuerId = issuer.getUniqueId();
-                    issuerName = issuer.getName();
-
+                if(!(Utils.getDatabaseManager().getBan(uuid) == null)) {
+                    Utils.sendMessage(commandSender, Messages.get("ban.already-banned").replace("%target%", strings[0]));
                 }
                 else {
-                    issuerId = null;
-                    issuerName = "CONSOLE";
+                    Player player = Bukkit.getPlayer(uuid);
+                    UUID issuerId;
+                    String issuerName;
+                    if (commandSender instanceof Player issuer) {
+                        if (issuer.getUniqueId().equals(uuid)) {
+                            Utils.sendMessage(issuer, Messages.get("ban.cant-ban-self"));
+                            return;
+                        }
+                        issuerId = issuer.getUniqueId();
+                        issuerName = issuer.getName();
+
+                    } else {
+                        issuerId = null;
+                        issuerName = "CONSOLE";
+                    }
+                    if (player != null && player.isOnline()) {
+                        Utils.ban(uuid, Objects.requireNonNull(player.getAddress()).getAddress(), "BAN", null, issuerId, issuerName, System.currentTimeMillis(), -1);
+                    } else {
+                        Utils.ban(uuid, null, "BAN", null, issuerId, issuerName, System.currentTimeMillis(), -1);
+                    }
+                    String targetName = (player != null) ? player.getName() : strings[0];
+                    Bukkit.getScheduler().runTask(Utils.getInstance(), () -> Utils.broadcastPunishment(issuerName, targetName, null, PunishmentType.BAN, Arrays.asList(strings).contains("-s")));
                 }
-                if(player != null && player.isOnline()) {
-                    Utils.ban(uuid, Objects.requireNonNull(player.getAddress()).getAddress(), "BAN", null, issuerId, issuerName, System.currentTimeMillis(), -1);
-                } else {
-                    Utils.ban(uuid, null, "BAN", null, issuerId, issuerName, System.currentTimeMillis(), -1);
-                }
-                String targetName = (player != null) ? player.getName() : strings[0];
-                Bukkit.getScheduler().runTask(Utils.getInstance(), () -> Utils.broadcastPunishment(issuerName, targetName, null , PunishmentType.BAN, Arrays.asList(strings).contains("-s")));
             }
         });
         return true;

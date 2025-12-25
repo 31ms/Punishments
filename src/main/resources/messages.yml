@@ -1,7 +1,14 @@
 default-reason: "No reason specified"
 silent-prefix: "[Silent]"
+ban-message:
+  - "§cYou are banned from this server!"
+  - ""
+  - "§eReason: §6%reason%"
+  - "§eBanned by: §6%issuer%"
+  - "§eExpires in: §6%expires_in%"
 ban:
   cant-ban-self: "<red>You can't ban yourself!"
   player-not-found: "<red>Player %player% not found!"
   broadcast: "<gold>%target% <yellow>has been banned by <gold>%issuer% <yellow>for <gold>%reason%"
   broadcast-silent: "<gray>%silent-prefix% <gold>%target% <yellow>has been banned by <gold>%issuer% <yellow>for <gold>%reason%"
+  already-banned: "<red>%target% is already banned!"
