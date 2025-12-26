@@ -4,9 +4,8 @@ main: xyz.propsik.punishments.Punishments
 api-version: '1.21'
 commands:
   ban:
-    description: idk
+    description: Bans a player from the server permanently.
     permission: punishments.command.ban
-  gettestrecord:
-    description: idk
-  revoketestrecord:
-    description: idk
+    usage: "§6§lUSAGE: §e/ban <player> [reason]"
+  punishments:
+    description: Info command for the Punishments plugin.

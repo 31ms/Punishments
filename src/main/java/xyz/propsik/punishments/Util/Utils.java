@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.propsik.punishments.Storage.DatabaseManager;
 
@@ -17,9 +18,13 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 
 public abstract class Utils {
@@ -51,7 +56,7 @@ public abstract class Utils {
         return miniMessage;
     }
     public static Component color(String message) {
-        return miniMessage.deserialize(message);
+        return getMiniMessage().deserialize(message);
     }
     public static void sendMessage(CommandSender sender, String message) {
         adventure.sender(sender).sendMessage(color(message));
@@ -106,8 +111,32 @@ public abstract class Utils {
                 issuedAt,
                 expiresAt);
         Player p = Bukkit.getPlayer(uuid);
+        String rs = reason != null ? reason : Messages.get("default-reason");
+        if(Messages.get("default-issuer-name") == null)
+        {
+            Utils.getInstance().getLogger().warning("Default issuer name is not set in messages.yml");
+        }
+        String issuer = issuerName == null ? Messages.get("default-issuer-name") : issuerName;
+        String dateFormat = Utils.getConfig().getString("date-format");
+        if(dateFormat == null || dateFormat.isEmpty()) {
+            dateFormat = "yyyy-MM-dd HH:mm";
+        }
+        String issuedAt2 = Instant.ofEpochMilli(issuedAt).atZone(ZoneId.systemDefault()).toLocalDateTime().format(DateTimeFormatter.ofPattern(dateFormat));
+        String expiresIn = (expiresAt == -1) ? "Never" : Utils.formatDurationtoString(expiresAt - System.currentTimeMillis());
+        String expiresAt2 = (expiresAt == -1) ? "Never" : Instant.ofEpochMilli(expiresAt).atZone(ZoneId.systemDefault()).toLocalDateTime().format(DateTimeFormatter.ofPattern(dateFormat));
+
         if(p != null && p.isOnline()) {
-            p.kickPlayer(Utils.getConfig().getString("messages.kick-message"));
+            String message = Messages.getList("ban-message").stream()
+                    .map(line -> line
+                            .replace("%reason%", rs)
+                            .replace("%issuer%", issuer != null ? issuer : Messages.get("default-issuer-name"))
+                            .replace("%issued_at%", issuedAt2)
+                            .replace("%expires_in%", expiresIn)
+                            .replace("%expires_at%", expiresAt2)
+                            .replace("%punishment_id%", String.valueOf(getDatabaseManager().getBan(uuid).getId()))
+                    )
+                    .collect(Collectors.joining("\n"));
+            p.kickPlayer(message);
         }
     }
     public static void broadcastPunishment(String issuer, String target, String reason, PunishmentType type, boolean isSilent)
@@ -170,6 +199,7 @@ public abstract class Utils {
                 if(p.hasPermission("punishments.notify.silent"))
                 {
                     Utils.sendMessage(p, message);
+                    Utils.getInstance().getLogger().info(issuer + "banned " + target + " silently " + "for reason: " + reason);
                 }
             }
         }
@@ -177,6 +207,7 @@ public abstract class Utils {
             for(Player p : Bukkit.getOnlinePlayers())
             {
                 Utils.sendMessage(p, message);
+                Utils.getInstance().getLogger().info(issuer + "banned " + target + " for reason: " + reason);
             }
         }
     }
@@ -246,7 +277,11 @@ public abstract class Utils {
             }
         }
     }
-    public static String formatDurationtoString(long duration) {
+    public static String formatDurationtoString(Long duration) {
+        if(duration == null)
+        {
+            return "Never";
+        }
         long minutes = duration / (1000 * 60) % 60;
         long hours = duration / (1000 * 60 * 60) % 24;
         long days = duration / (1000 * 60 * 60 * 24);

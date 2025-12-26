@@ -1,11 +1,11 @@
 package xyz.propsik.punishments;
 
+import com.sun.tools.javac.Main;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.propsik.punishments.Commands.BanCommand;
-import xyz.propsik.punishments.Commands.GetTestRecordCommand;
-import xyz.propsik.punishments.Commands.RevokeTestRecordCommand;
+import xyz.propsik.punishments.Commands.MainCommand;
 import xyz.propsik.punishments.Listeners.AsyncPlayerPreLoginListener;
 import xyz.propsik.punishments.Storage.H2DbManager;
 import xyz.propsik.punishments.Storage.MySQLDbManager;
@@ -34,8 +34,7 @@ public final class Punishments extends JavaPlugin {
     private void registerCommands()
     {
         registerCommand("ban", new BanCommand());
-        registerCommand("gettestrecord", new GetTestRecordCommand());
-        registerCommand("revoketestrecord", new RevokeTestRecordCommand());
+        registerCommand("punishments", new MainCommand());
     }
     private void registerCommand(String command, CommandExecutor executor)
     {

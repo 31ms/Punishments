@@ -26,8 +26,6 @@ public abstract class AbstractDatabaseManager implements DatabaseManager {
         }
     }
 
-
-
     @Override
     public void createTables() {
         String sql = """

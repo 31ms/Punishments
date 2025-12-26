@@ -1,12 +1,25 @@
+# Main configuration file for the punishment plugin.
+
+# Storage settings.
+# Default is an embedded H2 database.
+# Available options are: h2, mysql
+# Host must include the port, e.g. "localhost:3306" for MySQL.
+# Leave username, password and host blank for H2.
+
 database:
-  provider: "h2" # available options: h2, mysql
+  provider: "h2"
   host: "" # leave blank for h2.
   username: "" # leave blank for h2.
   password: "" # leave blank for h2.
   name: "database"
+# Duration format settings for displaying remaining time on temporary punishments.
 duration-format:
   years: "years"
   months: "months"
   days: "days"
   hours: "hours"
   minutes: "minutes"
+
+# Date format for displaying issued at and expires at timestamps.
+# Java's date formatting patterns: https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/format/DateTimeFormatter.html#patterns
+date-format: "yyyy-MM-dd HH:mm"

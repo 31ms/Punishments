@@ -1,14 +1,34 @@
+# Configuration file for ban messages
+
+# Default reason for bans if none is provided
 default-reason: "No reason specified"
+# What should console be named as when issuing punishments?
+default-issuer-name: "CONSOLE"
+# Prefix for silent bans
 silent-prefix: "[Silent]"
+
+# The ban message displayed to players when they try to log in but they are banned.
+# Available placeholders:
+# %reason% - The reason for the ban
+# %issuer% - The name of the staff member who issued the ban
+# %issued_at% - The date and time when the ban was issued
+# %expires_in% - The duration until the ban expires
+# %expires_at% - The date and time when the ban expires
+# %punishment_id% - The unique ID of the punishment
 ban-message:
   - "§cYou are banned from this server!"
   - ""
   - "§eReason: §6%reason%"
   - "§eBanned by: §6%issuer%"
   - "§eExpires in: §6%expires_in%"
+# /ban command messages
 ban:
   cant-ban-self: "<red>You can't ban yourself!"
-  player-not-found: "<red>Player %player% not found!"
+  # Available placeholders: %target%
+  player-not-found: "<red>Player %target% not found!"
+  # Available placeholders: %target%, %issuer%, %reason%
   broadcast: "<gold>%target% <yellow>has been banned by <gold>%issuer% <yellow>for <gold>%reason%"
+  # Available placeholders: %silent-prefix%, %target%, %issuer%, %reason%
   broadcast-silent: "<gray>%silent-prefix% <gold>%target% <yellow>has been banned by <gold>%issuer% <yellow>for <gold>%reason%"
+  # Available placeholders: %target%
   already-banned: "<red>%target% is already banned!"
